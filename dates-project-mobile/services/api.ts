@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios"
 import { Platform } from "react-native"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 
-const url = Platform.OS === "android" ? "http://192.168.100.17:8080" : "http://192.168.100.17:8080"
+const url = Platform.OS === "android" ? "http://10.0.2.2:8080" : "http://127.0.0.1:8080"
 
 const Api: AxiosInstance = axios.create({baseURL: url + "/api"})
 

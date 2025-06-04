@@ -17,7 +17,13 @@ func (h *ConsultoryHandler) GetMany(ctx *fiber.Ctx) error {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	consultories, err := h.repository.GetMany(context)
+	pageParam := ctx.Query("page", "1")
+	limitParam := ctx.Query("limit", "10")
+	page, _ := strconv.Atoi(pageParam)
+	limit, _ := strconv.Atoi(limitParam)
+	offset := (page - 1) * limit
+
+	consultories, err := h.repository.GetMany(context, offset, limit)
 
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
