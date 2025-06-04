@@ -11,10 +11,13 @@ type ConsultoryRepository struct {
 	db *gorm.DB
 }
 
-func (r *ConsultoryRepository) GetMany(ctx context.Context) ([]*models.Consultory, error) {
+func (r *ConsultoryRepository) GetMany(ctx context.Context, offset, limit int) ([]*models.Consultory, error) {
 	consultories := []*models.Consultory{}
 
-	res := r.db.Model(&models.Consultory{}).Order("updated_at desc").Find(&consultories)
+	res := r.db.WithContext(ctx).
+		Offset(offset).
+		Limit(limit).
+		Find(&consultories)
 
 	if res.Error != nil {
 		return nil, res.Error

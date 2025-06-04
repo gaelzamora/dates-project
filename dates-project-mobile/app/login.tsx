@@ -1,7 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import React, { useState } from "react";
 import { KeyboardAvoidingView, ScrollView, Image, StyleSheet, TouchableOpacity } from "react-native";
-import React from "react";
 import { VStack } from "@/components/VStack";
 import { HStack } from "@/components/HStack";
 import { Text } from "@/components/Text";

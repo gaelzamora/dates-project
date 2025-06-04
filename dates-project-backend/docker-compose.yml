@@ -4,8 +4,8 @@ services:
   app:
     tty: true
     restart: always
-    image: courses-app
-    container_name: courses-app
+    image: dates-app
+    container_name: dates-app
     build: .
     ports:
       - 8080:8080
@@ -22,7 +22,7 @@ services:
 
   db:
     image: postgres:alpine
-    container_name: courses-app-db
+    container_name: dates-app-db
     environment:
       - POSTGRES_HOST=${DB_HOST}
       - POSTGRES_DB=${DB_NAME}

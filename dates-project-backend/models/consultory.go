@@ -17,7 +17,7 @@ type Consultory struct {
 }
 
 type ConsultoryRepository interface {
-	GetMany(ctx context.Context) ([]*Consultory, error)
+	GetMany(ctx context.Context, offset, limit int) ([]*Consultory, error)
 	GetOne(ctx context.Context, consultoryId uint) (*Consultory, error)
 	CreateOne(ctx context.Context, doctorId uint, consultory *Consultory) (*Consultory, error)
 	UpdateOne(ctx context.Context, doctorId uint, consultoryId uint, updatedData map[string]interface{}) (*Consultory, error)

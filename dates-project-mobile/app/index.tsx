@@ -1,7 +1,6 @@
 import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import FooterWave from "@/components/FooterWave";
-import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 
 export default function Index() {
