@@ -1,78 +1,78 @@
-import {TabBarIcon} from "@/components/navigation/TabBarIcon";
-import { useAuth } from "@/context/AuthContext";
-import { UserRole } from "@/types/user";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import React from "react";
-import { ComponentProps } from "react";
-import { Text } from "react-native";
+import React, { ComponentProps } from "react";
+import { StyleSheet, View } from "react-native";
+import { useAuth } from "@/context/AuthContext";
 
 export default function TabLayout() {
-    const {user} = useAuth()
+    const { user } = useAuth();
 
     const tabs = [
         {
-            showFor: [UserRole.Patient, UserRole.Doctor],
             name: "(consultory)",
-            displayName: "Consultory",
-            icon: "calendar",
-            options: {
-                headerShown: false,
-            }
+            displayName: "Home",
+            icon: "home",
+            showFor: [true], // visible for all
         },
         {
-            showFor: [UserRole.Patient],
             name: "(dates)",
-            displayName: "My Dates",
-            icon: "ticket",
-            options: {
-                headerShown: false,
-            }
+            displayName: "Notas",
+            icon: "document-text",
+            showFor: [true],
         },
         {
-            showFor: [UserRole.Doctor],
-            name: "scan-date",
-            displayName: "Scan Date",
-            icon: "scan",
-            options: {
-                headerShown: true,
-            }
-        },
-        {
-            showFor: [UserRole.Patient, UserRole.Doctor],
             name: "settings",
             displayName: "Settings",
-            icon: "cog",
-            options: {
-                headerShown: true,
-            }
+            icon: "settings",
+            showFor: [true],
         },
     ];
 
     return (
-        <Tabs>
-            { tabs.map(tab => (
+        <Tabs
+            screenOptions={{
+                tabBarStyle: {
+                    backgroundColor: "transparent",
+                    borderTopWidth: 0,
+                    elevation: 0,
+                },
+                headerShown: false,
+            }}
+        >
+            {tabs.map(tab => (
                 <Tabs.Screen
                     key={tab.name}
                     name={tab.name}
                     options={{
-                        ...tab.options,
-                        headerTitle: tab.displayName,
-                        href: tab.showFor.includes(user?.role!) ? `/(authed)/(tabs)/settings` : null,
-                        tabBarLabel: ({ focused }) => (
-                            <Text style={{ color: focused ? "black" : "gray", fontSize: 12 }}>
-                                {tab.displayName} 
-                            </Text>
-                        ),
+                        tabBarLabel: tab.displayName,
                         tabBarIcon: ({ focused }) => (
-                            <TabBarIcon 
-                                name={tab.icon as ComponentProps<typeof Ionicons>["name"]}
-                                color={focused ? "black" : "gray"}
-                            />
-                        )
+                            <View
+                                style={[
+                                    styles.iconWrapper,
+                                    focused && styles.iconWrapperActive,
+                                ]}
+                            >
+                                <Ionicons
+                                    name={tab.icon as ComponentProps<typeof Ionicons>["name"]}
+                                    size={28}
+                                    color={focused ? "#fff" : "gray"}
+                                />
+                            </View>
+                        ),
                     }}
                 />
             ))}
         </Tabs>
-    )
+    );
 }
+
+const styles = StyleSheet.create({
+    iconWrapper: {
+        borderRadius: 999,
+        padding: 8,
+    },
+    iconWrapperActive: {
+        backgroundColor: "#2970e1",
+        borderRadius: 999,
+    },
+});
