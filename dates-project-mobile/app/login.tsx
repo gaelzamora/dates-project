@@ -9,7 +9,7 @@ import { Button } from "@/components/Button";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
-export default function login() {
+export default function Login() {
     const router = useRouter()
     const { authenticate, isLoadingAuth } = useAuth()
     const [password, setPassword] = useState("")

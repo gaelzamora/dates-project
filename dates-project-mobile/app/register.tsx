@@ -1,7 +1,6 @@
 import { useAuth } from "@/context/AuthContext";
-import { useState } from "react";
+import React, { useState } from "react";
 import { KeyboardAvoidingView, ScrollView, Image, StyleSheet, TouchableOpacity, Alert } from "react-native";
-import React from "react";
 import { VStack } from "@/components/VStack";
 import { HStack } from "@/components/HStack";
 import { Text } from "@/components/Text";
@@ -11,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 
-export default function register() {
+export default function Register() {
     const router = useRouter()
 
     const { authenticate, isLoadingAuth } = useAuth()
