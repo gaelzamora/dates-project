@@ -3,7 +3,7 @@ import React from "react"
 
 export default function ConsultoryLayout() {
     return (
-        <Stack screenOptions={{ headerBackTitle: "Consultories" }}>
+        <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="new" />
             <Stack.Screen name="consultory/[id]" />

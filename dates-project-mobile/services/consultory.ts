@@ -9,7 +9,7 @@ async function getOne(id: number): Promise<ConsultoryResponse> {
     return Api.get(`/consultories/${id}`)
 }
 
-async function getAll(page = 1, limit = 5): Promise<ConsultoryListResponse> {
+async function getAll(page = 1, limit = 4): Promise<ConsultoryListResponse> {
     return Api.get("/consultories", {
         params: { page, limit }
     })

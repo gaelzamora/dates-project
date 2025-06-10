@@ -57,7 +57,7 @@ export function AuthenticationProvider({ children }: React.PropsWithChildren) {
                     await AsyncStorage.setItem("token", response.data.token)
                     await AsyncStorage.setItem("user", JSON.stringify(response.data.user))
                     setUser(response.data.user)
-                    router.replace("/(authed)/(tabs)/settings")
+                    router.replace("/(authed)/(tabs)/(consultories)")
                 
                 }
         } catch (error) {

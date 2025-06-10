@@ -1,24 +1,25 @@
-import { HStack } from "@/components/HStack";
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { VStack } from "@/components/VStack";
-import { useAuth } from "@/context/AuthContext";
+// import { useAuth } from "@/context/AuthContext";
 import { consultoryService } from "@/services/consultory";
 import { Consultory } from "@/types/consultory";
-import { UserRole } from "@/types/user";
-import { router, useFocusEffect, useNavigation } from "expo-router";
-import React, { useCallback, useEffect, useState } from "react";
-import { Alert, FlatList, TouchableOpacity, StyleSheet, Text } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { router, useFocusEffect } from "expo-router";
+import React, { useCallback, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View, Image, Dimensions } from "react-native";
 
 export default function ConsultoryScreen() {
-    const { user } = useAuth()
-    const navigation = useNavigation()
+    // const { user } = useAuth()
 
     const [isLoading, setIsLoading] = useState(false)
     const [consultories, setConsultories] = useState<Consultory[]>([])
 
-    function onGoToConsultoryPage(id: number) {
-        router.push(`/(authed)/(tabs)/(consultories)/consultory/[id]`)
-    }
+    // function onGoToConsultoryPage(id: number) {
+    //     router.push(`/(authed)/(tabs)/(consultories)/consultory/[id]`)
+    // }
+
+    const screenWidth = Dimensions.get("window").width
+    const imageWidth = screenWidth - 40
+    const imageHeight = (imageWidth * 220) / 345
 
     const fetchConsultories = async () => {
         try {
@@ -34,69 +35,98 @@ export default function ConsultoryScreen() {
 
     useFocusEffect(useCallback(() => { fetchConsultories() }, []))
 
-    useEffect(() => {
-        navigation.setOptions({
-            HeaderTitle: "Consultories",
-            HeaderRight: user?.role === UserRole.Doctor ? headerRight : null,
-        })
-    }, [navigation, user])
-
     return (
         <VStack flex={1} p={20} gap={20}>
-            <HStack alignItems="center" justifyContent="center">
-                <Text style={styles.title}>Consultories</Text>
-            </HStack>
+            <View style={styles.addConsultories}>
+                <Image 
+                    source={require("@/assets/ads/add1.png")}
+                    style={{ width: imageWidth, height: imageHeight, borderRadius: 20 }}
+                    resizeMode="cover"
+                />
+            </View>
+            <View style={styles.consultoriesContainer}>
+                <View style={styles.headerAllConsultories}> 
+                    <Text style={{ fontSize: 20, fontWeight: "700" }}>All Consultories</Text>
+                    <View style={styles.rightOption}>
+                        <Text style={{ fontWeight: "600", fontSize: 14 }}>Popular</Text>
+                        <Image 
+                            source={require("@/assets/utils/arrow-to-down.png")}
+                            style={{ width: 12, height: 12, marginLeft: 10 }}
+                        />
+                    </View>
+                </View>
 
-            <FlatList
-                data={consultories}
-                keyExtractor={({ id }) => id.toString()}
-                onRefresh={fetchConsultories}
-                refreshing={isLoading}
-                ItemSeparatorComponent={() => <VStack h={20} />}
-                renderItem={({ item: consult }) => (
-                    <VStack
-                        gap={20}
-                        p={20}
-                        style={{
-                            backgroundColor: "white",
-                            borderRadius: 20,
-                        }}
-                        key={consult.id}
-                    >
-                        <TouchableOpacity onPress={() => onGoToConsultoryPage(consult.id)}>
-                            <HStack alignItems="center" justifyContent="space-between">
-                                <HStack alignItems="center">
-                                    <Text style={styles.name}>{consult.name}</Text>
-                                    <Text style={styles.name}>|</Text>
-                                    <Text style={styles.location}>{consult.location}</Text>
-                                </HStack>
-                            </HStack>
-                        </TouchableOpacity>
-                    </VStack>
-                )}
-            />
+                <FlatList
+                    data={consultories}
+                    keyExtractor={({ id }) => id.toString()}
+                    onRefresh={fetchConsultories}
+                    refreshing={isLoading}
+                    numColumns={2}
+                    style={{ height: "100%" }}
+                    renderItem={({ item: consult }) => (
+                        <View style={styles.gridItem}>
+                            <Text style={styles.nameConsultory}>{consult.name}</Text>
+                            <Text style={styles.locationConsultory}>{consult.location}</Text>
+                            <View style={styles.containerRate}>
+                                <Ionicons 
+                                    name="star"
+                                    color={"white"}
+                                    size={15}
+                                />
+                                <Text style={styles.textMedium}>5.0</Text>
+                            </View>
+                        </View>
+                    )}           
+                />
+            </View>
         </VStack>
     )
 }
 
 const styles = StyleSheet.create({
-    title: {
-        fontSize: 18,
+    consultoriesContainer: {
+        margin: 0
     },
-    name: {
-        fontSize: 26,
+    headerAllConsultories: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 10,
     },
-    location: {
-        fontSize: 16,
+    rightOption: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    gridItem: {
+        width: 160,
+        height: 160,
+        margin: 8,
+        backgroundColor: "#4461ed",
+        padding: 20,
+        borderRadius: 20,
+    },
+    nameConsultory: {
+        fontSize: 20,
+        color: "white",
+        fontWeight: "600"
+    },
+    locationConsultory: {
+        fontSize: 13,
+        color: "#d9d9d9",
+        fontWeight: "600",
+        marginTop: 30,
+    },
+    containerRate: {
+        marginTop: 10,
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    textMedium: {
+        color: "white",
+        fontWeight: "600",
+        marginLeft: 10
+    },
+    addConsultories: {
+        margin: 0
     }
 })
-
-const headerRight = () => {
-    return (
-        <TabBarIcon 
-            size={32}
-            name="add-circle-outline"
-            onPress={() => router.push("/(authed)/(tabs)/(consultories)/new")}
-        />
-    )
-}
