@@ -1,4 +1,4 @@
-import { StatusBar, Text } from "react-native";
+import { StatusBar, View } from "react-native";
 import React from "react";
 import "../global.css";
 import { Slot } from "expo-router";
