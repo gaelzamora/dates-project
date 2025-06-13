@@ -25,6 +25,8 @@ func main() {
 	authRepository := repositories.NewAuthRepository(db)
 	dateRepository := repositories.NewDateRepository(db)
 	consultoryRepository := repositories.NewConsultoryRepository(db)
+	userRepository := repositories.NewUserRepository(db)
+	ratingRepository := repositories.NewRatingRepository(db)
 
 	// Service
 	authService := services.NewAuthService(authRepository)
@@ -37,6 +39,8 @@ func main() {
 
 	handlers.NewDateHandler(privateRoutes.Group("/dates"), dateRepository)
 	handlers.NewConsultoryHandler(privateRoutes.Group("/consultories"), consultoryRepository)
+	handlers.NewUserHandler(privateRoutes.Group("/user"), userRepository)
+	handlers.NewRatingHandler(privateRoutes.Group("/rating"), ratingRepository)
 
 	app.Listen(fmt.Sprintf("0.0.0.0:" + envConfig.ServerPort))
 }
