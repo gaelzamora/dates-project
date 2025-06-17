@@ -19,6 +19,7 @@ func main() {
 	app := fiber.New(fiber.Config{
 		AppName:      "Dates Project",
 		ServerHeader: "Fiber",
+		BodyLimit:    20 * 1024 * 1024,
 	})
 
 	// Repositories
@@ -39,8 +40,8 @@ func main() {
 
 	handlers.NewDateHandler(privateRoutes.Group("/dates"), dateRepository)
 	handlers.NewConsultoryHandler(privateRoutes.Group("/consultories"), consultoryRepository)
-	handlers.NewUserHandler(privateRoutes.Group("/user"), userRepository)
-	handlers.NewRatingHandler(privateRoutes.Group("/rating"), ratingRepository)
+	handlers.NewUserHandler(privateRoutes.Group("/users"), userRepository)
+	handlers.NewRatingHandler(privateRoutes.Group("/ratings"), ratingRepository)
 
 	app.Listen(fmt.Sprintf("0.0.0.0:" + envConfig.ServerPort))
 }

@@ -11,5 +11,7 @@ func DBMigrator(db *gorm.DB) error {
 		&models.Consultory{},
 		&models.Date{},
 		&models.Rating{},
+		&models.ImageConsultory{},
+		&models.ConsultoryWithDoctor{},
 	)
 }

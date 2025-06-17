@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strconv"
+
 	"github.com/gaelzamora/courses-app/models"
 	"github.com/gaelzamora/courses-app/repositories"
 	"github.com/gaelzamora/courses-app/services"
@@ -21,7 +23,7 @@ func (h *UserHandler) UploadProfilePicture(ctx *fiber.Ctx) error {
 		})
 	}
 
-	imageURL, err := services.UploadToS3(file)
+	imageURL, err := services.UploadToS3(file, "profile")
 
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
@@ -47,10 +49,35 @@ func (h *UserHandler) UploadProfilePicture(ctx *fiber.Ctx) error {
 
 }
 
-func (h *UserHandler) GetUserInfo(ctx *fiber.Ctx) error {
+func (h *UserHandler) GetMyUserInfo(ctx *fiber.Ctx) error {
 	userId := uint(ctx.Locals("userId").(float64))
 
 	user, err := h.repository.GetUserByID(userId)
+
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Failed to retrieve user information",
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status": "success",
+		"data":   user,
+	})
+}
+
+func (h *UserHandler) GetUserById(ctx *fiber.Ctx) error {
+	userId, err := strconv.Atoi(ctx.Params("userId"))
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": "Invalid user ID",
+		})
+	}
+
+	user, err := h.repository.GetUserByID(uint(userId))
 
 	if err != nil {
 		return ctx.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
@@ -71,5 +98,6 @@ func NewUserHandler(router fiber.Router, repository *repositories.UserRepository
 	}
 
 	router.Post("/upload-profile-picture", handler.UploadProfilePicture)
-	router.Get("/me", handler.GetUserInfo)
+	router.Get("/me", handler.GetMyUserInfo)
+	router.Get("/user/:userId", handler.GetUserById)
 }

@@ -9,9 +9,13 @@ async function getOne(id: number): Promise<ConsultoryResponse> {
     return Api.get(`/consultories/${id}`)
 }
 
-async function getAll(page = 1, limit = 4): Promise<ConsultoryListResponse> {
+async function getAll(page, limit, specialty: string): Promise<ConsultoryListResponse> {
+    if (specialty === "all") {
+        specialty = ""
+    }
+    
     return Api.get("/consultories", {
-        params: { page, limit }
+        params: { page, limit, specialty}
     })
 }
 

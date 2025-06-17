@@ -36,7 +36,7 @@ export default function TabLayout() {
             <View style={styles.headerContainer}>
                 <View style={styles.profileSection}>
                     <Image 
-                        source={require('@/assets/auth/user.png')}
+                        source={{ uri: user.profilePicture }}
                         style={styles.avatar}
                     />
                     <View>

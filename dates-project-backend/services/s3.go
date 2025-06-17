@@ -11,7 +11,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
-func UploadToS3(file *multipart.FileHeader) (string, error) {
+func UploadToS3(file *multipart.FileHeader, destiny string) (string, error) {
 	// Crea una sesión de AWS
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String(os.Getenv("AWS_REGION")), // Región configurada en tus variables de entorno
@@ -28,7 +28,7 @@ func UploadToS3(file *multipart.FileHeader) (string, error) {
 	defer src.Close()
 
 	// Genera un nombre único para el archivo
-	fileName := fmt.Sprintf("profiles/%d-%s", time.Now().Unix(), file.Filename)
+	fileName := fmt.Sprintf("%s/%d-%s", destiny, time.Now().Unix(), file.Filename)
 
 	// Crea un uploader de S3
 	uploader := s3manager.NewUploader(sess)

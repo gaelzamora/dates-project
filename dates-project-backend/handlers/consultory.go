@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/gaelzamora/courses-app/models"
+	"github.com/gaelzamora/courses-app/services"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -19,12 +21,13 @@ func (h *ConsultoryHandler) GetMany(ctx *fiber.Ctx) error {
 
 	pageParam := ctx.Query("page", "1")
 	limitParam := ctx.Query("limit", "10")
+	specialty := ctx.Query("specialty", "")
+
 	page, _ := strconv.Atoi(pageParam)
 	limit, _ := strconv.Atoi(limitParam)
 	offset := (page - 1) * limit
 
-	consultories, err := h.repository.GetMany(context, offset, limit)
-
+	consultories, err := h.repository.GetManyWithDoctor(context, offset, limit, specialty)
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"status":  "fail",
@@ -137,13 +140,98 @@ func (h *ConsultoryHandler) DeleteOne(ctx *fiber.Ctx) error {
 	})
 }
 
+func (h *ConsultoryHandler) UploadConsultoryImages(ctx *fiber.Ctx) error {
+	consultoryId, err := strconv.Atoi(ctx.Params("consultoryId"))
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": "Invalid consultory ID",
+		})
+	}
+
+	form, err := ctx.MultipartForm()
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": "Invalid form data",
+		})
+	}
+
+	files := form.File["images"]
+	if len(files) == 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": "No images uploaded",
+		})
+	}
+
+	var uploadedImages []models.ImageConsultory
+	userId := uint(ctx.Locals("userId").(float64))
+
+	for _, file := range files {
+		key := fmt.Sprintf("consultories/%d/%s", consultoryId, file.Filename)
+		imageURL, err := services.UploadToS3(file, key)
+		if err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"status":  "fail",
+				"message": "Failed to upload image to S3",
+			})
+		}
+
+		image := models.ImageConsultory{
+			ConsultoryID: uint(consultoryId),
+			DoctorID:     userId,
+			URL:          imageURL,
+			Type:         models.Common,
+			CreatedAt:    time.Now(),
+		}
+		if err := h.repository.SaveConsultoryImage(&image); err != nil {
+			return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+				"status":  "fail",
+				"message": "Failed to save image in DB",
+			})
+		}
+
+		uploadedImages = append(uploadedImages, image)
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status":  "success",
+		"message": "Images uploaded",
+		"data":    uploadedImages,
+	})
+}
+
+func (h *ConsultoryHandler) GetConsultoryImages(ctx *fiber.Ctx) error {
+	consultoryId, err := strconv.Atoi(ctx.Params("consultoryId"))
+
+	if err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"status":  "fail",
+			"message": "Invalid form data",
+		})
+	}
+	images, err := h.repository.GetImagesFromConsultory(uint(consultoryId))
+
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"status": "success",
+		"data":   images,
+	})
+}
+
 func NewConsultoryHandler(router fiber.Router, repository models.ConsultoryRepository) {
 	handler := &ConsultoryHandler{
 		repository: repository,
 	}
 
+	// Consultories
 	router.Get("/", handler.GetMany)
 	router.Get("/:consultoryId", handler.GetOne)
 	router.Post("/", handler.CreateOne)
 	router.Delete("/:consultoryId", handler.DeleteOne)
+
+	// Images in consultories
+	router.Post("/:consultoryId/images", handler.UploadConsultoryImages)
+	router.Get("/:consultoryId/images", handler.GetConsultoryImages)
 }
