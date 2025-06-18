@@ -30,6 +30,7 @@ type User struct {
 type UserRepository interface {
 	UpdateProfilePicture(userId uint, imageURL string) error
 	GetUserByID(userId uint) (*User, error)
+	UpdateUserInfo(userId uint, updateData map[string]interface{}) error
 }
 
 func (u *User) AfterCreate(db *gorm.DB) (err error) {

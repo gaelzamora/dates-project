@@ -1,4 +1,4 @@
-import { AuthResponse } from "@/types/user"
+import { AuthResponse, User } from "@/types/user"
 import { Api } from "./api"
 
 async function login(email: string, password: string): Promise<AuthResponse> {
@@ -9,10 +9,9 @@ async function register(firstName: string, lastName: string, email: string, pass
     return Api.post("/auth/register", { firstName, lastName, email, password })
 }
 
-async function getUser(id: number): Promise<AuthResponse> {
-    console.log("Numero aqui...")
-    console.log(id)
-    return Api.get(`/users/user/${id}`)    
+async function getUser(id: number): Promise<User> {
+    const response = await Api.get(`/users/user/${id}`)
+    return response.data
 }
 
 const userService = {

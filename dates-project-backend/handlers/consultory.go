@@ -46,23 +46,33 @@ func (h *ConsultoryHandler) GetOne(ctx *fiber.Ctx) error {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5*time.Second))
 	defer cancel()
 
-	consultoryId, _ := strconv.Atoi(ctx.Params("consultoryId"))
-
-	consultory, err := h.repository.GetOne(context, uint(consultoryId))
-
+	consultoryId, err := strconv.Atoi(ctx.Params("consultoryId"))
 	if err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Invalid consultory ID",
+		})
+	}
+
+	consultory, err := h.repository.GetOne(context, uint(consultoryId))
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
 			"status":  "fail",
 			"message": err.Error(),
 		})
 	}
 
+	if consultory.ID == 0 {
+		return ctx.Status(fiber.StatusNotFound).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Consultory not found",
+		})
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
 		"status":  "success",
-		"message": "",
-		"data": &fiber.Map{
-			"consultory": consultory,
-		},
+		"message": "Consultory retrieved successfully",
+		"data":    consultory,
 	})
 }
 

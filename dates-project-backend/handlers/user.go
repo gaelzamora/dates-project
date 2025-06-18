@@ -92,6 +92,35 @@ func (h *UserHandler) GetUserById(ctx *fiber.Ctx) error {
 	})
 }
 
+func (h *UserHandler) UpdateUserInfo(ctx *fiber.Ctx) error {
+	userId := uint(ctx.Locals("userId").(float64))
+
+	updateData := make(map[string]interface{})
+	if err := ctx.BodyParser(&updateData); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Invalid request body",
+		})
+	}
+
+	if _, exists := updateData["email"]; exists {
+		delete(updateData, "email")
+	}
+
+	err := h.repository.UpdateUserInfo(userId, updateData)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
+			"status":  "fail",
+			"message": "Failed to update user information",
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"status":  "success",
+		"message": "User information updated successfully",
+	})
+}
+
 func NewUserHandler(router fiber.Router, repository *repositories.UserRepository) {
 	handler := &UserHandler{
 		repository: repository,
@@ -100,4 +129,5 @@ func NewUserHandler(router fiber.Router, repository *repositories.UserRepository
 	router.Post("/upload-profile-picture", handler.UploadProfilePicture)
 	router.Get("/me", handler.GetMyUserInfo)
 	router.Get("/user/:userId", handler.GetUserById)
+	router.Put("/me", handler.UpdateUserInfo)
 }

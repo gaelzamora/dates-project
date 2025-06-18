@@ -1,28 +1,30 @@
-import { AuthResponse } from "@/types/user";
+import { User } from "@/types/user";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 import { userService } from "@/services/user";
+import { Consultory } from "@/types/consultory";
+import { consultoryService } from "@/services/consultory";
 
 export default function ConsultoryDetailScreen() {
     const { id } = useLocalSearchParams()
 
-    const [user, setUser] = useState<AuthResponse | null>(null);
+    const [consultory, setConsultory] = useState<Consultory | null>(null);
     const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchConsultory = async () => {
             setIsLoading(true);
             try {
-                const response = await userService.getUser(Number(id));
-                setUser(response);
+                const consultoryData = await consultoryService.getOne(Number(id));
+                setConsultory(consultoryData);
             } catch (error) {
                 console.error(error)
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchUser();
+        fetchConsultory();
     }, [id]);
 
     if (isLoading) {
@@ -33,17 +35,14 @@ export default function ConsultoryDetailScreen() {
         );
     }
 
-    if (!user) {
-        return <Text>No user data</Text>;
+    if (!consultory) {
+        return <Text>No consultory data</Text>;
     }
 
 
     return (
         <View>
-            <Text>ID: {user.data.user.id}</Text>
-            <Text>Name: {user.data.user.firstName} {user.data.user.lastName}</Text>
-            <Text>Email: {user.data.user.email}</Text>
-            {/* Agrega más campos según tu AuthResponse */}
+            <Text>{consultory.specialty}</Text>
         </View>
     )
 }

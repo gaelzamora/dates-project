@@ -31,7 +31,7 @@ export function AuthenticationProvider({ children }: React.PropsWithChildren) {
             if (token && user) {
                 setIsLoggedIn(true)
                 setUser(JSON.parse(user))
-                router.replace("/(authed)/(tabs)/settings")
+                router.replace("/(authed)/(tabs)/(consultories)")
             } else {
                 setIsLoggedIn(false)
             }

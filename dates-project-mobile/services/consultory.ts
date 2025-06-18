@@ -1,16 +1,17 @@
-import { ConsultoryResponse, ConsultoryListResponse } from "@/types/consultory";
+import { ConsultoryResponse, ConsultoryListResponse, Consultory } from "@/types/consultory";
 import { Api } from "./api";
 
 async function createOne(name: string, description: string, location: string, capacity: number): Promise<ConsultoryResponse> {
     return Api.post("/consultories", { name, description, location, capacity })
 }
 
-async function getOne(id: number): Promise<ConsultoryResponse> {
-    return Api.get(`/consultories/${id}`)
+async function getOne(id: number): Promise<Consultory> {
+    const response = await Api.get(`/consultories/${id}`)
+    return response.data
 }
 
 async function getAll(page, limit, specialty: string): Promise<ConsultoryListResponse> {
-    if (specialty === "all") {
+    if (specialty == "all") {
         specialty = ""
     }
     

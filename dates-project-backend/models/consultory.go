@@ -65,7 +65,7 @@ type ConsultoryWithDoctor struct {
 }
 
 type ConsultoryRepository interface {
-	GetOne(ctx context.Context, consultoryId uint) (*Consultory, error)
+	GetOne(ctx context.Context, consultoryId uint) (ConsultoryWithDoctor, error)
 	CreateOne(ctx context.Context, doctorId uint, consultory *Consultory) (*Consultory, error)
 	UpdateOne(ctx context.Context, doctorId uint, consultoryId uint, updatedData map[string]interface{}) (*Consultory, error)
 	DeleteOne(ctx context.Context, consultoryId uint, doctorId uint) error

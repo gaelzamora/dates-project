@@ -26,13 +26,39 @@ func (r *ConsultoryRepository) GetMany(ctx context.Context, offset, limit int) (
 	return consultories, nil
 }
 
-func (r *ConsultoryRepository) GetOne(ctx context.Context, consultoryId uint) (*models.Consultory, error) {
-	consultory := &models.Consultory{}
+func (r *ConsultoryRepository) GetManyWithDoctor(ctx context.Context, offset, limit int, specialty string) ([]models.ConsultoryWithDoctor, error) {
+	var consultories []models.ConsultoryWithDoctor
 
-	res := r.db.Model(&consultory).Where("id = ?", consultoryId).First(consultory)
+	db := r.db.WithContext(ctx).
+		Table("consultories").
+		Select(`consultories.id, consultories.specialty, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
+                users.id as doctor_id, users.first_name as doctor_first_name, users.last_name as doctor_last_name, users.email as doctor_email, users.age as doctor_age, users.profile_picture as doctor_profile_pic, users.rating as doctor_rating`).
+		Joins("join users on users.id = consultories.doctor_id")
 
-	if res.Error != nil {
-		return nil, res.Error
+	if specialty != "" {
+		db = db.Where("consultories.specialty = ?", specialty)
+	}
+
+	err := db.Offset(offset).Limit(limit).Scan(&consultories).Error
+	return consultories, err
+}
+
+func (r *ConsultoryRepository) GetOne(ctx context.Context, consultoryId uint) (models.ConsultoryWithDoctor, error) {
+	var consultory models.ConsultoryWithDoctor
+
+	err := r.db.WithContext(ctx).
+		Table("consultories").
+		Select(`consultories.id, consultories.specialty, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
+                users.id as doctor_id, users.first_name as doctor_first_name, users.last_name as doctor_last_name, users.email as doctor_email, users.age as doctor_age, users.profile_picture as doctor_profile_pic, users.rating as doctor_rating`).
+		Joins("join users on users.id = consultories.doctor_id").
+		Where("consultories.id = ?", consultoryId).
+		Scan(&consultory).Error
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return consultory, nil
+		}
+		return consultory, err
 	}
 
 	return consultory, nil
@@ -92,22 +118,6 @@ func (r *ConsultoryRepository) SaveConsultoryImage(image *models.ImageConsultory
 	return r.db.Create(image).Error
 }
 
-func (r *ConsultoryRepository) GetManyWithDoctor(ctx context.Context, offset, limit int, specialty string) ([]models.ConsultoryWithDoctor, error) {
-	var consultories []models.ConsultoryWithDoctor
-
-	db := r.db.WithContext(ctx).
-		Table("consultories").
-		Select(`consultories.id, consultories.specialty, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
-                users.id as doctor_id, users.first_name as doctor_first_name, users.last_name as doctor_last_name, users.email as doctor_email, users.age as doctor_age, users.profile_picture as doctor_profile_pic, users.rating as doctor_rating`).
-		Joins("join users on users.id = consultories.doctor_id")
-
-	if specialty != "" {
-		db = db.Where("consultories.specialty = ?", specialty)
-	}
-
-	err := db.Offset(offset).Limit(limit).Scan(&consultories).Error
-	return consultories, err
-}
 func NewConsultoryRepository(db *gorm.DB) models.ConsultoryRepository {
 	return &ConsultoryRepository{
 		db: db,
