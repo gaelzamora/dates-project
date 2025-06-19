@@ -102,7 +102,24 @@ export default function ConsultoryScreen() {
       }
       ListHeaderComponent={
         <>
-          {/* Slider de imágenes */}
+          <View style={styles.headerContainer}>
+                <View style={styles.profileSection}>
+                    <Image 
+                        source={{ uri: user.profilePicture }}
+                        style={styles.avatar}
+                    />
+                    <View>
+                        <Text style={styles.greeting}>Hello,</Text>
+                        <Text style={styles.userName}>
+                            {(user?.firstName && user?.lastName) ? `${user.firstName} ${user.lastName}` : "Usuario"}
+                        </Text>
+                    </View>
+                </View>
+                <View style={styles.iconSection}>
+                    <Ionicons name="search" size={24} color="black" style={styles.headerIcon} />
+                    <Ionicons name="filter" size={24} color="black" style={styles.headerIcon} />
+                </View>
+          </View>
           <View style={{ width: imageWidth, height: imageHeight, borderRadius: 20, overflow: "hidden", marginBottom: 20 }}>
             <Animated.Image
               source={images[0]}

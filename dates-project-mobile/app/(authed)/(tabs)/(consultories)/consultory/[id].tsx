@@ -1,8 +1,6 @@
-import { User } from "@/types/user";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
-import { userService } from "@/services/user";
+import { ActivityIndicator, Text, View, StyleSheet, Image } from "react-native";
 import { Consultory } from "@/types/consultory";
 import { consultoryService } from "@/services/consultory";
 
@@ -39,10 +37,24 @@ export default function ConsultoryDetailScreen() {
         return <Text>No consultory data</Text>;
     }
 
+    console.log(consultory.doctorProfilePicture)
 
     return (
         <View>
-            <Text>{consultory.specialty}</Text>
+            <Image 
+                source={{ uri: consultory.doctorProfilePicture }}
+                width={100}
+                height={100}
+            />
+            <View style={styles.consultoryInformationContainer}>
+            </View>
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    consultoryInformationContainer: {
+        padding: 20,
+    },
+
+})

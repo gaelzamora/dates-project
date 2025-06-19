@@ -1,10 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
+import { useRoute } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React, { ComponentProps } from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 
 export default function TabLayout() {
+    const route = useRoute()
     const { user } = useAuth()
 
     const tabs = [
@@ -31,27 +33,10 @@ export default function TabLayout() {
         },
     ];
 
+    console.log("ruta: ", route.name)
+
     return (
         <>
-            <View style={styles.headerContainer}>
-                <View style={styles.profileSection}>
-                    <Image 
-                        source={{ uri: user.profilePicture }}
-                        style={styles.avatar}
-                    />
-                    <View>
-                        <Text style={styles.greeting}>Hello,</Text>
-                        <Text style={styles.userName}>
-                            {(user?.firstName && user?.lastName) ? `${user.firstName} ${user.lastName}` : "Usuario"}
-                        </Text>
-                    </View>
-                </View>
-                <View style={styles.iconSection}>
-                    <Ionicons name="search" size={24} color="black" style={styles.headerIcon} />
-                    <Ionicons name="filter" size={24} color="black" style={styles.headerIcon} />
-                </View>
-            </View>
-
             <Tabs
                 screenOptions={{
                     tabBarStyle: {
