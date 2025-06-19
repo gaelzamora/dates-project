@@ -7,7 +7,6 @@ import { View, Image, Text, StyleSheet } from "react-native";
 
 export default function TabLayout() {
     const route = useRoute()
-    const { user } = useAuth()
 
     const tabs = [
         {
@@ -32,8 +31,6 @@ export default function TabLayout() {
             icon: "settings-outline",
         },
     ];
-
-    console.log("ruta: ", route.name)
 
     return (
         <>
@@ -79,42 +76,7 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-    headerContainer: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        marginTop: 30
-    },
-    profileSection: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    avatar: {
-        width: 40,
-        height: 40,
-        borderRadius: 10,
-        marginRight: 12,
-        backgroundColor: "#eee",
-    },
-    greeting: {
-        fontSize: 14,
-        color: "#585858",
-        fontWeight: "500"
-    },
-    userName: {
-        fontSize: 17,
-        fontWeight: "700",
-        color: "black",
-    },
-    iconSection: {
-        flexDirection: "row",
-        alignItems: "center",
-    },
-    headerIcon: {
-        marginLeft: 16,
-    },
+    
     containerIcon: {
         height: 50,
         width: 50,

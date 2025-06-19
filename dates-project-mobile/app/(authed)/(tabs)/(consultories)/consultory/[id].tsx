@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View, StyleSheet, Image } from "react-native";
 import { Consultory } from "@/types/consultory";
 import { consultoryService } from "@/services/consultory";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ConsultoryDetailScreen() {
     const { id } = useLocalSearchParams()
@@ -37,24 +38,53 @@ export default function ConsultoryDetailScreen() {
         return <Text>No consultory data</Text>;
     }
 
-    console.log(consultory.doctorProfilePicture)
-
     return (
-        <View>
-            <Image 
+        <View style={styles.container}>
+            <Image
                 source={{ uri: consultory.doctorProfilePicture }}
-                width={100}
-                height={100}
+                style={StyleSheet.absoluteFillObject}
+                resizeMode="cover"
             />
-            <View style={styles.consultoryInformationContainer}>
+            <View style={styles.overlay}>
+                <Ionicons 
+                    name="arrow-back-outline" 
+                    size={30}
+                    style={{ padding: 10 }}
+                />
+                <View style={{ 
+                    flexDirection: "row",
+                    alignItems: "center",
+                 }}>
+                    <Ionicons 
+                        name="heart-outline"
+                        size={30}
+                    />
+                </View>
             </View>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    consultoryInformationContainer: {
-        padding: 20,
+    container: {
+        width: "100%",
+        height: 450,
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 15,
     },
-
+    overlay: {
+        flex: 1,
+        paddingVertical: 56,
+        paddingHorizontal: 26,
+        backgroundColor: "rgba(0,0,0,0.1)",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+    },
+    text: {
+        color: "#fff",
+        fontSize: 18,
+        fontWeight: "bold",
+    },
 })
