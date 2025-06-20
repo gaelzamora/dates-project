@@ -7,6 +7,7 @@ export type Consultory = {
     id: number
     specialty: string
     description: string
+    price: number
     location: string
     capacity: number
     rating: number

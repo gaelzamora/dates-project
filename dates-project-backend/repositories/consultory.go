@@ -31,7 +31,7 @@ func (r *ConsultoryRepository) GetManyWithDoctor(ctx context.Context, offset, li
 
 	db := r.db.WithContext(ctx).
 		Table("consultories").
-		Select(`consultories.id, consultories.specialty, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
+		Select(`consultories.id, consultories.specialty, consultories.price, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
                 users.id as doctor_id, users.first_name as doctor_first_name, users.last_name as doctor_last_name, users.email as doctor_email, users.age as doctor_age, users.profile_picture as doctor_profile_pic, users.rating as doctor_rating`).
 		Joins("join users on users.id = consultories.doctor_id")
 
@@ -48,7 +48,7 @@ func (r *ConsultoryRepository) GetOne(ctx context.Context, consultoryId uint) (m
 
 	err := r.db.WithContext(ctx).
 		Table("consultories").
-		Select(`consultories.id, consultories.specialty, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
+		Select(`consultories.id, consultories.specialty, consultories.price, consultories.description, consultories.location, consultories.capacity, consultories.rating, consultories.created_at, consultories.updated_at,
                 users.id as doctor_id, users.first_name as doctor_first_name, users.last_name as doctor_last_name, users.email as doctor_email, users.age as doctor_age, users.profile_picture as doctor_profile_pic, users.rating as doctor_rating`).
 		Joins("join users on users.id = consultories.doctor_id").
 		Where("consultories.id = ?", consultoryId).

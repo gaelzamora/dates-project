@@ -21,6 +21,7 @@ type Consultory struct {
 	ID          uint      `json:"id" gorm:"primaryKey"`
 	Specialty   string    `json:"specialty"`
 	Description string    `json:"description"`
+	Price       float64   `json:"price"`
 	DoctorID    uint      `json:"doctorId"`
 	Location    string    `json:"location"`
 	Capacity    uint      `json:"capacity"`
@@ -49,6 +50,7 @@ type ConsultoryWithDoctor struct {
 	ID          uint      `json:"id"`
 	Specialty   string    `json:"specialty"`
 	Description string    `json:"description"`
+	Price       float64   `json:"price"`
 	Location    string    `json:"location"`
 	Capacity    uint      `json:"capacity"`
 	Rating      float64   `json:"rating"`

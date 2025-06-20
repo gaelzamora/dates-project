@@ -6,7 +6,9 @@ async function login(email: string, password: string): Promise<AuthResponse> {
 }
 
 async function register(firstName: string, lastName: string, email: string, password): Promise<AuthResponse> {
-    return Api.post("/auth/register", { firstName, lastName, email, password })
+    const response = await Api.post("/auth/register", { firstName, lastName, email, password })
+
+    return response.data
 }
 
 async function getUser(id: number): Promise<User> {

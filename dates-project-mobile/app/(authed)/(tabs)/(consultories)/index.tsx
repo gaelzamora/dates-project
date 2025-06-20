@@ -7,26 +7,17 @@ import { router, useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Alert, FlatList, StyleSheet, Text, View, Image, Dimensions, Animated, TouchableOpacity, ActivityIndicator,  } from "react-native";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const specialistIcons: Record<string, string> = {
-  General: "stethoscope",
-  Pediatric: "baby-face-outline",
-  Cardiology: "heart-pulse",
-  Neurology: "brain",
-  Pulmonology: "lungs",
-  Physiotherapy: "run",
-  Psychology: "head-cog-outline",
-};
+import { icons } from "@/icons/icons";
 
 const specialistList = [
-    "All",
-    "General",
-    "Pediatric",
-    "Cardiology",
-    "Neurology",
-    "Pulmonology",
-    "Physiotherapy",
-    "Psychology"
+    "all",
+    "general",
+    "pediatric",
+    "cardiology",
+    "neurology",
+    "pulmonology",
+    "physiotherapy",
+    "psychology"
 ]
 
 export default function ConsultoryScreen() {
@@ -153,13 +144,6 @@ export default function ConsultoryScreen() {
               <View style={styles.consultoriesContainer}>
                 <View style={styles.headerAllConsultories}>
                   <Text style={{ fontSize: 20, fontWeight: "700" }}>Doctor Speciality</Text>
-                  <View style={styles.rightOption}>
-                    <Text style={{ fontWeight: "600", fontSize: 14 }}>Popular</Text>
-                    <Image
-                      source={require("@/assets/utils/arrow-to-down.png")}
-                      style={{ width: 12, height: 12, marginLeft: 10 }}
-                    />
-                  </View>
                 </View>
               </View>
     
@@ -182,12 +166,12 @@ export default function ConsultoryScreen() {
                     >
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <MaterialCommunityIcons
-                        name={specialistIcons[item] || "menu"}
+                        name={icons.specialist[item] || "menu"}
                         size={22}
                         color="#4F8EF7"
                         />
                         <Text style={[
-                            { fontWeight: "600", marginLeft: 8 },
+                            { fontWeight: "600", marginLeft: 8, textTransform: "capitalize" },
                             activeConsultoryOption === item && styles.activeOptionConsultoryText
                         ]}>{item}</Text>
                     </View>
@@ -218,6 +202,7 @@ export default function ConsultoryScreen() {
                     style={styles.avatarDoctor}
                 />
                 <View>
+                    <Text style={styles.textSpecialty}>{consult.specialty}</Text>
                     <Text style={styles.textDoctor}>{"Dr. " + consult.doctorFirstName + " " + consult.doctorLastName}</Text>
                     <Text>{consult.location}</Text>
                     <View style={styles.containerRate}>
@@ -343,4 +328,9 @@ const styles = StyleSheet.create({
     headerIcon: {
         marginLeft: 16,
     },
+    textSpecialty: {
+      fontSize: 10,
+      color: "#595959",
+      textTransform: "capitalize"
+    }
 })

@@ -1,12 +1,9 @@
-import { useAuth } from "@/context/AuthContext";
 import { Ionicons } from "@expo/vector-icons";
-import { useRoute } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React, { ComponentProps } from "react";
-import { View, Image, Text, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 export default function TabLayout() {
-    const route = useRoute()
 
     const tabs = [
         {
